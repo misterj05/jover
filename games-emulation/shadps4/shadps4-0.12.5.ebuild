@@ -11,6 +11,7 @@ DISCORDRPC_COMMIT="19f66e6dcabb2268965f453db9e5774ede43238f"
 LIBUSB_COMMIT="c4d237a5803900b78dcc2961d057fcc8a678d3fd"
 GLSLANG_COMMIT="ba1640446f3826a518721d1f083f3a8cca1120c3"
 HWINFO_COMMIT="351c59828a79958f74f3ccab5e7773ffd724f6f7"
+JSON_COMMIT="55f93686c01528224f448c19128836e7df245f72"
 MAGICENUM_COMMIT="a413fcc9c46a020a746907136a384c227f3cd095"
 SIRIT_COMMIT="282083a595dcca86814dedab2f2b0363ef38f1ec"
 TRACY_COMMIT="143a53d1985b8e52a7590a0daca30a0a7c653b42"
@@ -47,6 +48,8 @@ else
 			-> "${PN}"-glslang-"${GLSLANG_COMMIT}".tar.gz
 		https://github.com/shadps4-emu/ext-hwinfo/archive/"${HWINFO_COMMIT}".tar.gz
 			-> "${PN}"-hwinfo-"${HWINFO_COMMIT}".tar.gz
+		https://github.com/nlohmann/json/archive/"${JSON_COMMIT}".tar.gz
+			-> "${PN}"-json-"${JSON_COMMIT}".tar.gz
 		https://github.com/Neargye/magic_enum/archive/"${MAGICENUM_COMMIT}".tar.gz
 			-> "${PN}"-magicenum-"${MAGICENUM_COMMIT}".tar.gz
 		https://github.com/shadps4-emu/sirit/archive/"${SIRIT_COMMIT}".tar.gz
@@ -117,6 +120,9 @@ src_prepare() {
 		rmdir "${S}"/externals/hwinfo || die
 		mv "${WORKDIR}"/ext-hwinfo-"${HWINFO_COMMIT}" "${S}"/externals/hwinfo || die
 
+		rmdir "${S}"/externals/json || die
+		mv "${WORKDIR}"/json-"${JSON_COMMIT}" "${S}"/externals/json || die
+
 		rmdir "${S}"/externals/magic_enum || die
 		mv "${WORKDIR}"/magic_enum-"${MAGICENUM_COMMIT}" "${S}"/externals/magic_enum || die
 
@@ -147,7 +153,6 @@ src_prepare() {
 
 src_configure() {
 	local mycmakeargs=(
-		-DENABLE_QT_GUI=no
 		-DENABLE_UPDATER=no
 		-DENABLE_DISCORD_RPC=$(usex discord)
 		-DSIRIT_USE_SYSTEM_SPIRV_HEADERS=on
