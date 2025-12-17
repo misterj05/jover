@@ -12,7 +12,7 @@ VULKANHEADERS_COMMIT="33d7f512583b8de44d1b6384aa1cf482f92e53e9"
 DESCRIPTION="The Official Qt Launcher for shadps4"
 HOMEPAGE="https://shadps4.net/"
 
-if [[ "${PV}" == *9999* ]]; then
+if [[ "${PV}" == 9999 ]]; then
 	inherit git-r3
 	EGIT_REPO_URI="https://github.com/shadps4-emu/shadps4-qtlauncher"
 	EGIT_MIN_CLONE_TYPE="single"
@@ -57,7 +57,7 @@ BDEPEND="
 "
 
 src_prepare() {
-	if [[ "${PV}" != *9999* ]]; then
+	if [[ "${PV}" != 9999 ]]; then
 		rmdir "${S}"/externals/json || die
 		mv "${WORKDIR}"/json-"${JSON_COMMIT}" "${S}"/externals/json || die
 

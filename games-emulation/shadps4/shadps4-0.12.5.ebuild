@@ -24,7 +24,7 @@ ZYCORE_COMMIT="38d4f0285e6157ee840ea82a9b90aba71c8a705d"
 DESCRIPTION="PlayStation 4 emulator"
 HOMEPAGE="https://shadps4.net/"
 
-if [[ "${PV}" == *9999* ]]; then
+if [[ "${PV}" == 9999 ]]; then
 	inherit git-r3
 	EGIT_REPO_URI="https://github.com/shadps4-emu/shadPS4"
 	EGIT_MIN_CLONE_TYPE="single"
@@ -101,7 +101,7 @@ BDEPEND="
 "
 
 src_prepare() {
-	if [[ "${PV}" != *9999* ]]; then
+	if [[ "${PV}" != 9999 ]]; then
 		rmdir "${S}"/externals/LibAtrac9 || die
 		mv "${WORKDIR}"/ext-LibAtrac9-"${LIBATRAC9_COMMIT}" "${S}"/externals/LibAtrac9 || die
 
