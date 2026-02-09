@@ -1,11 +1,13 @@
-# Copyright 1999-2025 Gentoo Authors
+# Copyright 1999-2026 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 inherit cmake xdg optfeature
 
+CLI11_COMMIT="bf5a16a26a34a9a7ad75f4a7705585e44675fef0"
 LIBATRAC9_COMMIT="ec8899dadf393f655f2871a94e0fe4b3d6220c9a"
+FDKAAC_COMMIT="ee76460efbdb147e26d804c798949c23f174460b"
 DEARIMGUI_COMMIT="f4d9359095eff3eb03f685921edc1cf0e37b1687"
 DISCORDRPC_COMMIT="19f66e6dcabb2268965f453db9e5774ede43238f"
 LIBUSB_COMMIT="c4d237a5803900b78dcc2961d057fcc8a678d3fd"
@@ -39,8 +41,12 @@ else
 	SRC_URI="
 		https://github.com/shadps4-emu/shadPS4/archive/v."${PV}".tar.gz
 			-> "${P}".tar.gz
+		https://github.com/shadexternals/CLI11/archive/"${CLI11_COMMIT}".tar.gz
+			-> "${PN}"-cli11-"${CLI11_COMMIT}".tar.gz
 		https://github.com/shadps4-emu/ext-LibAtrac9/archive/"${LIBATRAC9_COMMIT}".tar.gz
 			-> "${PN}"-libatrac9-"${LIBATRAC9_COMMIT}".tar.gz
+		https://github.com/mstorsjo/fdk-aac/archive/"${FDKAAC_COMMIT}".tar.gz
+			-> "${PN}"-fdkaac-"${FDKAAC_COMMIT}".tar.gz
 		https://github.com/shadps4-emu/ext-imgui/archive/"${DEARIMGUI_COMMIT}".tar.gz
 			-> "${PN}"-dearimgui-"${DEARIMGUI_COMMIT}".tar.gz
 		https://github.com/shadps4-emu/ext-discord-rpc/archive/"${DISCORDRPC_COMMIT}".tar.gz
@@ -110,8 +116,14 @@ BDEPEND="
 
 src_prepare() {
 	if [[ "${PV}" != 9999 ]]; then
+		rmdir "${S}"/externals/CLI11 || die
+		mv "${WORKDIR}"/CLI11-"${CLI11_COMMIT}" "${S}"/externals/CLI11 || die
+
 		rmdir "${S}"/externals/LibAtrac9 || die
 		mv "${WORKDIR}"/ext-LibAtrac9-"${LIBATRAC9_COMMIT}" "${S}"/externals/LibAtrac9 || die
+
+		rmdir "${S}"/externals/aacdec/fdk-aac || die
+		mv "${WORKDIR}"/fdk-aac-"${FDKAAC_COMMIT}" "${S}"/externals/aacdec/fdk-aac || die
 
 		rmdir "${S}"/externals/dear_imgui || die
 		mv "${WORKDIR}"/ext-imgui-"${DEARIMGUI_COMMIT}" "${S}"/externals/dear_imgui || die

@@ -1,4 +1,4 @@
-# Copyright 1999-2025 Gentoo Authors
+# Copyright 1999-2026 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -6,6 +6,7 @@ EAPI=8
 inherit cmake xdg optfeature
 
 LIBATRAC9_COMMIT="ec8899dadf393f655f2871a94e0fe4b3d6220c9a"
+FDKAAC_COMMIT="ee76460efbdb147e26d804c798949c23f174460b"
 DEARIMGUI_COMMIT="f4d9359095eff3eb03f685921edc1cf0e37b1687"
 DISCORDRPC_COMMIT="19f66e6dcabb2268965f453db9e5774ede43238f"
 LIBUSB_COMMIT="c4d237a5803900b78dcc2961d057fcc8a678d3fd"
@@ -41,6 +42,8 @@ else
 			-> "${P}".tar.gz
 		https://github.com/shadps4-emu/ext-LibAtrac9/archive/"${LIBATRAC9_COMMIT}".tar.gz
 			-> "${PN}"-libatrac9-"${LIBATRAC9_COMMIT}".tar.gz
+		https://github.com/mstorsjo/fdk-aac/archive/"${FDKAAC_COMMIT}".tar.gz
+			-> "${PN}"-fdkaac-"${FDKAAC_COMMIT}".tar.gz
 		https://github.com/shadps4-emu/ext-imgui/archive/"${DEARIMGUI_COMMIT}".tar.gz
 			-> "${PN}"-dearimgui-"${DEARIMGUI_COMMIT}".tar.gz
 		https://github.com/shadps4-emu/ext-discord-rpc/archive/"${DISCORDRPC_COMMIT}".tar.gz
@@ -57,7 +60,7 @@ else
 			-> "${PN}"-magicenum-"${MAGICENUM_COMMIT}".tar.gz
 		https://github.com/richgel999/miniz/archive/"${MINIZ_COMMIT}".tar.gz
 			-> "${PN}"-miniz-"${MINIZ_COMMIT}".tar.gz
-		https://github.com/shadps4-emu/ext-SDL/archive/"${SDL_COMMIT}".tar.gz
+		https://github.com/shadexternals/sdl3/archive/"${SDL_COMMIT}".tar.gz
 			-> "${PN}"-sdl-"${SDL_COMMIT}".tar.gz
 		https://github.com/libsdl-org/SDL_mixer/archive/"${SDLMIXER_COMMIT}".tar.gz
 			-> "${PN}"-sdlmixer-"${SDLMIXER_COMMIT}".tar.gz
@@ -102,6 +105,7 @@ DEPEND="
 BDEPEND="
 	clang? ( llvm-core/clang ) !clang? ( sys-devel/gcc )
 
+	dev-cpp/cli11
 	dev-libs/boost
 	dev-libs/half
 	dev-cpp/robin-map
@@ -112,6 +116,9 @@ src_prepare() {
 	if [[ "${PV}" != 9999 ]]; then
 		rmdir "${S}"/externals/LibAtrac9 || die
 		mv "${WORKDIR}"/ext-LibAtrac9-"${LIBATRAC9_COMMIT}" "${S}"/externals/LibAtrac9 || die
+
+		rmdir "${S}"/externals/aacdec/fdk-aac || die
+		mv "${WORKDIR}"/fdk-aac-"${FDKAAC_COMMIT}" "${S}"/externals/aacdec/fdk-aac || die
 
 		rmdir "${S}"/externals/dear_imgui || die
 		mv "${WORKDIR}"/ext-imgui-"${DEARIMGUI_COMMIT}" "${S}"/externals/dear_imgui || die
@@ -138,7 +145,7 @@ src_prepare() {
 		mv "${WORKDIR}"/miniz-"${MINIZ_COMMIT}" "${S}"/externals/miniz || die
 
 		rmdir "${S}"/externals/sdl3 || die
-		mv "${WORKDIR}"/ext-SDL-"${SDL_COMMIT}" "${S}"/externals/sdl3 || die
+		mv "${WORKDIR}"/sdl3-"${SDL_COMMIT}" "${S}"/externals/sdl3 || die
 
 		rmdir "${S}"/externals/sdl3_mixer || die
 		mv "${WORKDIR}"/SDL_mixer-"${SDLMIXER_COMMIT}" "${S}"/externals/sdl3_mixer || die
