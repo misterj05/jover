@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+    <maintainer type="person">
+        <name>misterj05</name>
+        <email>misterj05@protonmail.com</email>
+    </maintainer>
+    <use>
+        <flag name="suid">
+            Enables setuid capabilities for the gsr-global-hotkeys binary
+            which enables global hotkeys to work.
+        </flag>
+    </use>
+    <upstream>
+        <bugs-to>mailto:dec05eba@protonmail.com</bugs-to>
+    </upstream>
+</pkgmetadata>
