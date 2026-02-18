@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+    <maintainer type="person">
+        <name>misterj05</name>
+        <email>misterj05@protonmail.com</email>
+    </maintainer>
+    <upstream>
+        <bugs-to>mailto:dec05eba@protonmail.com</bugs-to>
+    </upstream>
+</pkgmetadata>
