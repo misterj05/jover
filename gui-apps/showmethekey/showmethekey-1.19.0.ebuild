@@ -3,7 +3,7 @@
 
 EAPI=8
 
-inherit meson
+inherit meson gnome2-utils
 
 if [[ "${PV}" == 9999 ]]; then
 	inherit git-r3
@@ -44,4 +44,16 @@ RDEPEND="
 src_prepare() {
 	default
 	sed -i 's/gtk4-update-icon-/gtk-update-icon-/g' meson.build || die
+}
+
+pkg_postinst() {
+	gnome2_gconf_install
+	gnome2_schemas_update
+	gnome2_giomodule_cache_update
+}
+
+pkg_postrm() {
+	gnome2_gconf_uninstall
+	gnome2_schemas_update
+	gnome2_giomodule_cache_update
 }
