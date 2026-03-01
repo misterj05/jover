@@ -7,18 +7,18 @@ inherit meson
 
 if [[ "${PV}" == 9999 ]]; then
 	inherit git-r3
-	EGIT_REPO_URI="https://github.com/DreamMaoMao/mangowc"
+	EGIT_REPO_URI="https://github.com/mangowm/mango"
 else
 	RESTRICT="mirror"
 	KEYWORDS="~amd64"
 	SRC_URI="
-		https://github.com/DreamMaoMao/mangowc/archive/"${PV}".tar.gz
+		https://github.com/mangowm/mango/archive/"${PV}".tar.gz
 			-> "${P}".tar.gz
 	"
 fi
 
 DESCRIPTION="A Wayland compositor based on wlroots and scenefx"
-HOMEPAGE="https://github.com/DreamMaoMao/mangowc"
+HOMEPAGE="https://github.com/mangowm/mango"
 LICENSE="GPL-3+ MIT CC0-1.0"
 SLOT="0"
 IUSE="X"
