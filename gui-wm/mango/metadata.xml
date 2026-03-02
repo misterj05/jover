@@ -6,9 +6,9 @@
 		<email>misterj05@protonmail.com</email>
 	</maintainer>
 	<longdescription lang="en">
-		MangoWC is a Wayland compositor inspired by dwl.
+		Mango is a Wayland compositor inspired by dwl.
 
-		MangoWC supports customizable complete animations, flexible window layouts
+		Mango supports customizable complete animations, flexible window layouts
 		(main stack, monocle, grid, scrolling, etc.), rich window states, scratchpads,
 		window effects and powerful external configuration with hot-reloading
 		via a keybind.
