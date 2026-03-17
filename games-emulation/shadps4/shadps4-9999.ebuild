@@ -5,17 +5,23 @@ EAPI=8
 
 inherit cmake xdg optfeature
 
+# Some of these are in ::gentoo but upstream does not properly
+# prefer the system library over the submodule, this has been
+# improving over the past few versions so these are slowly
+# getting unbundled when they can be.
+
 LIBATRAC9_COMMIT="ec8899dadf393f655f2871a94e0fe4b3d6220c9a"
+HTTPLIB_COMMIT="f80864ca031932351abef49b74097c67f14719c6"
 FDKAAC_COMMIT="ee76460efbdb147e26d804c798949c23f174460b"
 DEARIMGUI_COMMIT="f4d9359095eff3eb03f685921edc1cf0e37b1687"
 DISCORDRPC_COMMIT="19f66e6dcabb2268965f453db9e5774ede43238f"
 LIBUSB_COMMIT="c4d237a5803900b78dcc2961d057fcc8a678d3fd"
 GLSLANG_COMMIT="ba1640446f3826a518721d1f083f3a8cca1120c3"
 HWINFO_COMMIT="351c59828a79958f74f3ccab5e7773ffd724f6f7"
-JSON_COMMIT="55f93686c01528224f448c19128836e7df245f72"
 MAGICENUM_COMMIT="a413fcc9c46a020a746907136a384c227f3cd095"
+# Waiting on 3.1 in ::gentoo to unbundle
 MINIZ_COMMIT="174573d60290f447c13a2b1b3405de2b96e27d6c"
-SDL_COMMIT="bdb72bb3f051de32c91f5deb439a50bfd51499dc"
+SDL_COMMIT="4e2fd57e77fb4a28c0eeef0670fc4121cc2cf1f9"
 SDLMIXER_COMMIT="4182794ea45fe28568728670c6f1583855d0e85c"
 SIRIT_COMMIT="282083a595dcca86814dedab2f2b0363ef38f1ec"
 TRACY_COMMIT="143a53d1985b8e52a7590a0daca30a0a7c653b42"
@@ -42,6 +48,8 @@ else
 			-> "${P}".tar.gz
 		https://github.com/shadps4-emu/ext-LibAtrac9/archive/"${LIBATRAC9_COMMIT}".tar.gz
 			-> "${PN}"-libatrac9-"${LIBATRAC9_COMMIT}".tar.gz
+		https://github.com/shadexternals/cpp-httplib/archive/"${HTTPLIB_COMMIT}".tar.gz
+			-> "${PN}"-httplib-"${HTTPLIB_COMMIT}".tar.gz
 		https://github.com/mstorsjo/fdk-aac/archive/"${FDKAAC_COMMIT}".tar.gz
 			-> "${PN}"-fdkaac-"${FDKAAC_COMMIT}".tar.gz
 		https://github.com/shadps4-emu/ext-imgui/archive/"${DEARIMGUI_COMMIT}".tar.gz
@@ -54,8 +62,6 @@ else
 			-> "${PN}"-glslang-"${GLSLANG_COMMIT}".tar.gz
 		https://github.com/shadps4-emu/ext-hwinfo/archive/"${HWINFO_COMMIT}".tar.gz
 			-> "${PN}"-hwinfo-"${HWINFO_COMMIT}".tar.gz
-		https://github.com/nlohmann/json/archive/"${JSON_COMMIT}".tar.gz
-			-> "${PN}"-json-"${JSON_COMMIT}".tar.gz
 		https://github.com/Neargye/magic_enum/archive/"${MAGICENUM_COMMIT}".tar.gz
 			-> "${PN}"-magicenum-"${MAGICENUM_COMMIT}".tar.gz
 		https://github.com/richgel999/miniz/archive/"${MINIZ_COMMIT}".tar.gz
@@ -93,6 +99,7 @@ DEPEND="
 	>=media-video/ffmpeg-5.1.2
 	media-libs/libpng
 	>=dev-libs/libfmt-10.2.0
+	dev-cpp/nlohmann_json
 	dev-libs/pugixml
 	dev-libs/xxhash
 	sys-libs/zlib-ng
@@ -108,6 +115,7 @@ BDEPEND="
 	dev-cpp/cli11
 	dev-libs/boost
 	dev-libs/half
+	media-libs/openal
 	dev-cpp/robin-map
 	dev-cpp/toml11
 "
@@ -116,6 +124,9 @@ src_prepare() {
 	if [[ "${PV}" != 9999 ]]; then
 		rmdir "${S}"/externals/LibAtrac9 || die
 		mv "${WORKDIR}"/ext-LibAtrac9-"${LIBATRAC9_COMMIT}" "${S}"/externals/LibAtrac9 || die
+
+		rmdir "${S}"/externals/cpp-httplib || die
+		mv "${WORKDIR}"/cpp-httplib-"${HTTPLIB_COMMIT}" "${S}"/externals/cpp-httplib || die
 
 		rmdir "${S}"/externals/aacdec/fdk-aac || die
 		mv "${WORKDIR}"/fdk-aac-"${FDKAAC_COMMIT}" "${S}"/externals/aacdec/fdk-aac || die
@@ -134,9 +145,6 @@ src_prepare() {
 
 		rmdir "${S}"/externals/hwinfo || die
 		mv "${WORKDIR}"/ext-hwinfo-"${HWINFO_COMMIT}" "${S}"/externals/hwinfo || die
-
-		rmdir "${S}"/externals/json || die
-		mv "${WORKDIR}"/json-"${JSON_COMMIT}" "${S}"/externals/json || die
 
 		rmdir "${S}"/externals/magic_enum || die
 		mv "${WORKDIR}"/magic_enum-"${MAGICENUM_COMMIT}" "${S}"/externals/magic_enum || die
