@@ -48,8 +48,6 @@ DEPEND="
 	dev-libs/wayland
 	dev-util/wayland-scanner
 
-	sys-apps/dbus
-
 	sys-libs/libcap
 "
 
