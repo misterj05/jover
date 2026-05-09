@@ -3,7 +3,7 @@
 
 EAPI=8
 
-inherit meson systemd
+inherit meson
 
 if [[ "${PV}" == 9999 ]]; then
 	inherit git-r3
@@ -57,27 +57,17 @@ BDEPEND="
 
 src_configure() {
 	local emesonargs=(
-		# This is done so portage can handle the service file
-		# instead of gpu-screen-recorder-ui's meson script
-		-Dsystemd=false
-
 		$(meson_use suid capabilities)
 	)
-
 	meson_src_configure
 }
 
-src_install() {
-	systemd_douserunit "${S}"/extra/"${PN}".service
-
-	meson_src_install
-}
-
 pkg_postinst() {
-	ewarn "You need to setup the daemon for "${PN}"."
+	ewarn "If you don't want to start gsr-ui on every boot read below to setup autostart:"
 	ewarn " "
-	ewarn "SystemD: \"systemctl enable --now "${PN}".service\""
+	ewarn "Desktop Environment (DE): Launch program normally via desktop entry,"
+	ewarn "enable \"Start program on system startup?\" in the settings menu."
 	ewarn " "
-	ewarn "OpenRC: You need to add the command \"gsr-ui launch-daemon\" into the"
-	ewarn "init of your WM or DE of choice."
+	ewarn "Window Manager (WM): You need to add the command \"gsr-ui launch-daemon\" into the"
+	ewarn "init of your WM of choice."
 }
