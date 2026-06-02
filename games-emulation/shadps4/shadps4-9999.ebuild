@@ -24,8 +24,8 @@ MAGICENUM_COMMIT="a413fcc9c46a020a746907136a384c227f3cd095"
 MINIMP3_COMMIT="7b590fdcfa5a79c033e76eacc05d0c3e4c79f536"
 # Waiting on 3.1 in ::gentoo to unbundle
 MINIZ_COMMIT="174573d60290f447c13a2b1b3405de2b96e27d6c"
-SDL_COMMIT="d5af35e3fbb5bb6555ed00e69740d52af2a4e877"
 SIRIT_COMMIT="282083a595dcca86814dedab2f2b0363ef38f1ec"
+SPIRVHEADERS_COMMIT="2acb319af38d43be3ea76bfabf3998e5281d8d12"
 SPDLOG_COMMIT="b8944a4bcd478ee03375c9c50dc8d6c741f43f7b"
 TRACY_COMMIT="143a53d1985b8e52a7590a0daca30a0a7c653b42"
 VMA_COMMIT="f378e7b3f18f6e2b06b957f6ba7b1c7207d2a536"
@@ -75,10 +75,10 @@ else
 			-> "${PN}"-minimp3-"${MINIMP3_COMMIT}".tar.gz
 		https://github.com/richgel999/miniz/archive/"${MINIZ_COMMIT}".tar.gz
 			-> "${PN}"-miniz-"${MINIZ_COMMIT}".tar.gz
-		https://github.com/shadexternals/sdl3/archive/"${SDL_COMMIT}".tar.gz
-			-> "${PN}"-sdl-"${SDL_COMMIT}".tar.gz
 		https://github.com/shadps4-emu/sirit/archive/"${SIRIT_COMMIT}".tar.gz
 			-> "${PN}"-sirit-"${SIRIT_COMMIT}".tar.gz
+		https://github.com/KhronosGroup/SPIRV-Headers/archive/"${SPIRVHEADERS_COMMIT}".tar.gz
+			-> "${PN}"-spirvheaders-"${SPIRVHEADERS_COMMIT}".tar.gz
 		https://github.com/gabime/spdlog/archive/"${SPDLOG_COMMIT}".tar.gz
 			-> "${PN}"-spdlog-"${SPDLOG_COMMIT}".tar.gz
 		https://github.com/shadps4-emu/tracy/archive/"${TRACY_COMMIT}".tar.gz
@@ -105,17 +105,18 @@ RDEPEND="
 "
 
 DEPEND="
+	x11-libs/libX11
+
 	>=media-video/ffmpeg-5.1.2
-	media-libs/libpng
 	>=dev-libs/libfmt-12.0.0
 	dev-cpp/nlohmann_json
+	media-libs/libpng
 	dev-libs/pugixml
+	media-libs/libsdl3
 	dev-libs/xxhash
 	sys-libs/zlib-ng
 
-	discord? (
-		dev-libs/rapidjson
-	)
+	discord? ( dev-libs/rapidjson )
 "
 
 BDEPEND="
@@ -170,11 +171,11 @@ src_prepare() {
 		rmdir "${S}"/externals/miniz || die
 		mv "${WORKDIR}"/miniz-"${MINIZ_COMMIT}" "${S}"/externals/miniz || die
 
-		rmdir "${S}"/externals/sdl3 || die
-		mv "${WORKDIR}"/sdl3-"${SDL_COMMIT}" "${S}"/externals/sdl3 || die
-
 		rmdir "${S}"/externals/sirit || die
 		mv "${WORKDIR}"/sirit-"${SIRIT_COMMIT}" "${S}"/externals/sirit || die
+
+		rmdir "${S}"/externals/sirit/externals/SPIRV-Headers || die
+		mv "${WORKDIR}"/SPIRV-Headers-"${SPIRVHEADERS_COMMIT}" "${S}"/externals/sirit/externals/SPIRV-Headers || die
 
 		rmdir "${S}"/externals/spdlog || die
 		mv "${WORKDIR}"/spdlog-"${SPDLOG_COMMIT}" "${S}"/externals/spdlog || die
@@ -205,7 +206,6 @@ src_configure() {
 	local mycmakeargs=(
 		-DENABLE_UPDATER=no
 		-DENABLE_DISCORD_RPC=$(usex discord)
-		-DSIRIT_USE_SYSTEM_SPIRV_HEADERS=on
 	)
 
 	if use clang; then
