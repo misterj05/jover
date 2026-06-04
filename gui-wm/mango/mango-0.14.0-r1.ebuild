@@ -35,6 +35,8 @@ COMMON_DEPEND+="
 	dev-libs/wayland
 	dev-libs/libpcre2
 	x11-libs/libxkbcommon
+	x11-libs/pixman
+	dev-libs/cJSON
 	X? (
 		x11-libs/libxcb:=
 		x11-libs/xcb-util-wm
