@@ -38,6 +38,7 @@ DEPEND="
 	x11-libs/libXext
 	x11-libs/libXi
 	x11-libs/libXcursor
+	x11-libs/libxkbcommon
 
 	media-libs/libglvnd[X]
 
