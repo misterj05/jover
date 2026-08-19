@@ -11,7 +11,8 @@ inherit cmake xdg optfeature
 # getting unbundled when they can be.
 
 IMGUIFILEDIALOG_COMMIT="6e3ddeb485e8804beefae6e6d690b7709084bacd"
-LIBATRAC9_COMMIT="ec8899dadf393f655f2871a94e0fe4b3d6220c9a"
+LIBATRAC9_COMMIT="946e05a9212976626a9f5e52f29c0a7202871f29"
+ABSEIL_COMMIT="76bb24329e8bf5f39704eb10d21b9a80befa7c81"
 HTTPLIB_COMMIT="28f8264d134a576422cd0f99f19719c2749d9e47"
 FDKAAC_COMMIT="ee76460efbdb147e26d804c798949c23f174460b"
 DEARIMGUI_COMMIT="f4d9359095eff3eb03f685921edc1cf0e37b1687"
@@ -22,17 +23,17 @@ LIBRESSL_COMMIT="b0504086dbbc186724b0cc92e6ba1832c245de0b"
 LIBUSB_COMMIT="d087ea86539ab1f1ec42faf86e2357e2fad126a6"
 MAGICENUM_COMMIT="a413fcc9c46a020a746907136a384c227f3cd095"
 MINIMP3_COMMIT="7b590fdcfa5a79c033e76eacc05d0c3e4c79f536"
-# Waiting on 3.1 in ::gentoo to unbundle
-MINIZ_COMMIT="174573d60290f447c13a2b1b3405de2b96e27d6c"
+PROTOBUF_COMMIT="5917ee224a7e47383a78acc129628511fe210dff"
 SIRIT_COMMIT="282083a595dcca86814dedab2f2b0363ef38f1ec"
 SPIRVHEADERS_COMMIT="2acb319af38d43be3ea76bfabf3998e5281d8d12"
 SPDLOG_COMMIT="b8944a4bcd478ee03375c9c50dc8d6c741f43f7b"
 TRACY_COMMIT="143a53d1985b8e52a7590a0daca30a0a7c653b42"
 VMA_COMMIT="f378e7b3f18f6e2b06b957f6ba7b1c7207d2a536"
-VULKANHEADERS_COMMIT="33d7f512583b8de44d1b6384aa1cf482f92e53e9"
+VULKANHEADERS_COMMIT="ee3b5caaa7e372715873c7b9c390ee1c3ca5db25"
 XBYAK_COMMIT="44a72f369268f7d552650891b296693e91db86bb"
 ZYDIS_COMMIT="120e0e705f8e3b507dc49377ac2879979f0d545c"
 ZYCORE_COMMIT="38d4f0285e6157ee840ea82a9b90aba71c8a705d"
+ZSTD_COMMIT="5c7b7bad26808e6b40ac3b3d0075466e27738a9d"
 
 DESCRIPTION="PlayStation 4 emulator"
 HOMEPAGE="https://shadps4.net/"
@@ -53,6 +54,8 @@ else
 			-> "${PN}"-imguifiledialog-"${IMGUIFILEDIALOG_COMMIT}".tar.gz
 		https://github.com/shadps4-emu/ext-LibAtrac9/archive/"${LIBATRAC9_COMMIT}".tar.gz
 			-> "${PN}"-libatrac9-"${LIBATRAC9_COMMIT}".tar.gz
+		https://github.com/abseil/abseil-cpp/archive/"${ABSEIL_COMMIT}".tar.gz
+			-> "${PN}"-abseil-"${ABSEIL_COMMIT}".tar.gz
 		https://github.com/shadexternals/cpp-httplib/archive/"${HTTPLIB_COMMIT}".tar.gz
 			-> "${PN}"-httplib-"${HTTPLIB_COMMIT}".tar.gz
 		https://github.com/mstorsjo/fdk-aac/archive/"${FDKAAC_COMMIT}".tar.gz
@@ -73,8 +76,8 @@ else
 			-> "${PN}"-magicenum-"${MAGICENUM_COMMIT}".tar.gz
 		https://github.com/lieff/minimp3/archive/"${MINIMP3_COMMIT}".tar.gz
 			-> "${PN}"-minimp3-"${MINIMP3_COMMIT}".tar.gz
-		https://github.com/richgel999/miniz/archive/"${MINIZ_COMMIT}".tar.gz
-			-> "${PN}"-miniz-"${MINIZ_COMMIT}".tar.gz
+		https://github.com/shadexternals/protobuf/archive/"${PROTOBUF_COMMIT}".tar.gz
+			-> "${PN}"-protobuf-"${PROTOBUF_COMMIT}".tar.gz
 		https://github.com/shadps4-emu/sirit/archive/"${SIRIT_COMMIT}".tar.gz
 			-> "${PN}"-sirit-"${SIRIT_COMMIT}".tar.gz
 		https://github.com/KhronosGroup/SPIRV-Headers/archive/"${SPIRVHEADERS_COMMIT}".tar.gz
@@ -93,6 +96,8 @@ else
 			-> "${PN}"-zydis-"${ZYDIS_COMMIT}".tar.gz
 		https://github.com/zyantific/zycore-c/archive/"${ZYCORE_COMMIT}".tar.gz
 			-> "${PN}"-zycore-"${ZYCORE_COMMIT}".tar.gz
+		https://github.com/shadexternals/zstd/archive/"${ZSTD_COMMIT}".tar.gz
+			-> "${PN}"-zstd-"${ZSTD_COMMIT}".tar.gz
 	"
 fi
 
@@ -109,11 +114,15 @@ DEPEND="
 
 	>=media-video/ffmpeg-5.1.2
 	>=dev-libs/libfmt-12.0.0
+	media-libs/freetype
 	dev-cpp/nlohmann_json
 	media-libs/libpng
+	net-libs/miniupnpc
+	>=dev-libs/miniz-3.1.1
 	dev-libs/pugixml
 	media-libs/libsdl3
 	dev-libs/xxhash
+	app-arch/zarchive
 	sys-libs/zlib-ng
 
 	discord? ( dev-libs/rapidjson )
@@ -137,6 +146,10 @@ src_prepare() {
 
 		rmdir "${S}"/externals/LibAtrac9 || die
 		mv "${WORKDIR}"/ext-LibAtrac9-"${LIBATRAC9_COMMIT}" "${S}"/externals/LibAtrac9 || die
+
+		# remove patch when 0.19.0
+		eapply "${FILESDIR}"/abseil.patch
+		mv "${WORKDIR}"/abseil-cpp-"${ABSEIL_COMMIT}" "${S}"/externals/abseil-cpp || die
 
 		rmdir "${S}"/externals/cpp-httplib || die
 		mv "${WORKDIR}"/cpp-httplib-"${HTTPLIB_COMMIT}" "${S}"/externals/cpp-httplib || die
@@ -168,8 +181,8 @@ src_prepare() {
 		rmdir "${S}"/externals/minimp3 || die
 		mv "${WORKDIR}"/minimp3-"${MINIMP3_COMMIT}" "${S}"/externals/minimp3 || die
 
-		rmdir "${S}"/externals/miniz || die
-		mv "${WORKDIR}"/miniz-"${MINIZ_COMMIT}" "${S}"/externals/miniz || die
+		rmdir "${S}"/externals/protobuf || die
+		mv "${WORKDIR}"/protobuf-"${PROTOBUF_COMMIT}" "${S}"/externals/protobuf || die
 
 		rmdir "${S}"/externals/sirit || die
 		mv "${WORKDIR}"/sirit-"${SIRIT_COMMIT}" "${S}"/externals/sirit || die
@@ -197,14 +210,19 @@ src_prepare() {
 
 		rmdir "${S}"/externals/zydis/dependencies/zycore || die
 		mv "${WORKDIR}"/zycore-c-"${ZYCORE_COMMIT}" "${S}"/externals/zydis/dependencies/zycore || die
+
+		rmdir "${S}"/externals/zstd || die
+		mv "${WORKDIR}"/zstd-"${ZSTD_COMMIT}" "${S}"/externals/zstd || die
 	fi
 
+	eapply_user
 	cmake_src_prepare
 }
 
 src_configure() {
 	local mycmakeargs=(
 		-DENABLE_UPDATER=no
+		-DENABLE_SYSTEM_LIBRARIES=yes
 		-DENABLE_DISCORD_RPC=$(usex discord)
 	)
 

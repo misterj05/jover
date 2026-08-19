@@ -1,0 +1,40 @@
+From ca4f8b94e9feeeb80e41984e02faac9c3c90cc67 Mon Sep 17 00:00:00 2001
+From: squidbus <175574877+squidbus@users.noreply.github.com>
+Date: Tue, 18 Aug 2026 13:14:42 -0700
+Subject: [PATCH] externals: Use abseil as submodule instead of fetching at
+ build time
+
+jover: Same as upstream PR #4872 except I only kept the modification to cmake
+in the patch, this avoids a linking error when using system abseil compiled with
+GCC when shadps4 and submodules are being compiled with clang.
+
+---
+ externals/CMakeLists.txt | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/externals/CMakeLists.txt b/externals/CMakeLists.txt
+index 1dc6fc655f7..e7944af6b9a 100644
+--- a/externals/CMakeLists.txt
++++ b/externals/CMakeLists.txt
+@@ -382,6 +382,11 @@ if (APPLE AND NOT ENABLE_SYSTEM_VULKAN AND NOT ENABLE_TESTS)
+     set(VULKAN_ICD_PATH "${CMAKE_CURRENT_BINARY_DIR}/mesa-kosmickrisp/outputs/kosmickrisp_mesa_icd.json" PARENT_SCOPE)
+ endif()
+ 
++# abseil (for protobuf)
++if (NOT TARGET absl::strings)
++    add_subdirectory(abseil-cpp EXCLUDE_FROM_ALL)
++endif()
++
+ # protobuf
+ set(protobuf_BUILD_TESTS              OFF CACHE INTERNAL "")
+ set(protobuf_BUILD_EXAMPLES           OFF CACHE INTERNAL "")
+@@ -389,7 +394,8 @@ set(protobuf_BUILD_PROTOC_BINARIES    ON  CACHE INTERNAL "")
+ set(protobuf_INSTALL                  OFF CACHE INTERNAL "")
+ set(protobuf_WITH_ZLIB                OFF CACHE INTERNAL "")
+ set(protobuf_BUILD_SHARED_LIBS        OFF CACHE INTERNAL "")
+-set(protobuf_FORCE_FETCH_DEPENDENCIES ON  CACHE INTERNAL "")
++set(protobuf_LOCAL_DEPENDENCIES_ONLY  ON  CACHE INTERNAL "")
++set(protobuf_FORCE_FETCH_DEPENDENCIES OFF CACHE INTERNAL "")
+ if(MSVC)
+ set(protobuf_MSVC_STATIC_RUNTIME OFF CACHE BOOL "" FORCE)
+ endif()
