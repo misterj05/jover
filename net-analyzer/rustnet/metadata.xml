@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<name>misterj05</name>
+		<email>misterj05@protonmail.com</email>
+	</maintainer>
+	<upstream>
+		<remote-id type="github">domcyrus/rustnet</remote-id>
+		<maintainer status="active">
+			<name>domcyrus</name>
+		</maintainer>
+		<bugs-to>https://github.com/domcyrus/rustnet/issues</bugs-to>
+		<changelog>https://github.com/domcyrus/rustnet/releases</changelog>
+	</upstream>
+</pkgmetadata>
