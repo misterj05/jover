@@ -10,12 +10,12 @@ inherit cmake xdg optfeature
 # improving over the past few versions so these are slowly
 # getting unbundled when they can be.
 
-IMGUIFILEDIALOG_COMMIT="6e3ddeb485e8804beefae6e6d690b7709084bacd"
+IMGUIFILEDIALOG_COMMIT="57a1c6a6d44bd99e844e3642d27851f6c065af62"
 LIBATRAC9_COMMIT="946e05a9212976626a9f5e52f29c0a7202871f29"
 ABSEIL_COMMIT="76bb24329e8bf5f39704eb10d21b9a80befa7c81"
 HTTPLIB_COMMIT="28f8264d134a576422cd0f99f19719c2749d9e47"
 FDKAAC_COMMIT="ee76460efbdb147e26d804c798949c23f174460b"
-DEARIMGUI_COMMIT="f4d9359095eff3eb03f685921edc1cf0e37b1687"
+IMGUI_COMMIT="7e1b65d26d52e9dd199d889c148c72184de647b4"
 DISCORDRPC_COMMIT="19f66e6dcabb2268965f453db9e5774ede43238f"
 GLSLANG_COMMIT="ba1640446f3826a518721d1f083f3a8cca1120c3"
 HWINFO_COMMIT="8660006e0ca4aae5dda7a29e585968b50b0273b7"
@@ -24,7 +24,7 @@ LIBUSB_COMMIT="d087ea86539ab1f1ec42faf86e2357e2fad126a6"
 MAGICENUM_COMMIT="a413fcc9c46a020a746907136a384c227f3cd095"
 MINIMP3_COMMIT="7b590fdcfa5a79c033e76eacc05d0c3e4c79f536"
 PROTOBUF_COMMIT="5917ee224a7e47383a78acc129628511fe210dff"
-SIRIT_COMMIT="282083a595dcca86814dedab2f2b0363ef38f1ec"
+SIRIT_COMMIT="c58f4d441cfdb6905d011a906704716833485486"
 SPIRVHEADERS_COMMIT="2acb319af38d43be3ea76bfabf3998e5281d8d12"
 SPDLOG_COMMIT="b8944a4bcd478ee03375c9c50dc8d6c741f43f7b"
 TRACY_COMMIT="143a53d1985b8e52a7590a0daca30a0a7c653b42"
@@ -60,8 +60,8 @@ else
 			-> "${PN}"-httplib-"${HTTPLIB_COMMIT}".tar.gz
 		https://github.com/mstorsjo/fdk-aac/archive/"${FDKAAC_COMMIT}".tar.gz
 			-> "${PN}"-fdkaac-"${FDKAAC_COMMIT}".tar.gz
-		https://github.com/shadps4-emu/ext-imgui/archive/"${DEARIMGUI_COMMIT}".tar.gz
-			-> "${PN}"-dearimgui-"${DEARIMGUI_COMMIT}".tar.gz
+		https://github.com/shadexternals/imgui/archive/"${IMGUI_COMMIT}".tar.gz
+			-> "${PN}"-imgui-"${IMGUI_COMMIT}".tar.gz
 		https://github.com/shadps4-emu/ext-discord-rpc/archive/"${DISCORDRPC_COMMIT}".tar.gz
 			-> "${PN}"-discordrpc-"${DISCORDRPC_COMMIT}".tar.gz
 		https://github.com/shadexternals/libressl/archive/"${LIBRESSL_COMMIT}".tar.gz
@@ -147,8 +147,7 @@ src_prepare() {
 		rmdir "${S}"/externals/LibAtrac9 || die
 		mv "${WORKDIR}"/ext-LibAtrac9-"${LIBATRAC9_COMMIT}" "${S}"/externals/LibAtrac9 || die
 
-		# remove patch when 0.19.0
-		eapply "${FILESDIR}"/abseil.patch
+		rmdir "${S}"/externals/abseil-cpp || die
 		mv "${WORKDIR}"/abseil-cpp-"${ABSEIL_COMMIT}" "${S}"/externals/abseil-cpp || die
 
 		rmdir "${S}"/externals/cpp-httplib || die
@@ -157,8 +156,8 @@ src_prepare() {
 		rmdir "${S}"/externals/aacdec/fdk-aac || die
 		mv "${WORKDIR}"/fdk-aac-"${FDKAAC_COMMIT}" "${S}"/externals/aacdec/fdk-aac || die
 
-		rmdir "${S}"/externals/dear_imgui || die
-		mv "${WORKDIR}"/ext-imgui-"${DEARIMGUI_COMMIT}" "${S}"/externals/dear_imgui || die
+		rmdir "${S}"/externals/imgui || die
+		mv "${WORKDIR}"/imgui-"${IMGUI_COMMIT}" "${S}"/externals/imgui || die
 
 		rmdir "${S}"/externals/discord-rpc || die
 		mv "${WORKDIR}"/ext-discord-rpc-"${DISCORDRPC_COMMIT}" "${S}"/externals/discord-rpc || die
@@ -215,7 +214,6 @@ src_prepare() {
 		mv "${WORKDIR}"/zstd-"${ZSTD_COMMIT}" "${S}"/externals/zstd || die
 	fi
 
-	eapply_user
 	cmake_src_prepare
 }
 
