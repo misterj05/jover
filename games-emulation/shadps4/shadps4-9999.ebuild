@@ -34,6 +34,7 @@ XBYAK_COMMIT="44a72f369268f7d552650891b296693e91db86bb"
 ZYDIS_COMMIT="120e0e705f8e3b507dc49377ac2879979f0d545c"
 ZYCORE_COMMIT="38d4f0285e6157ee840ea82a9b90aba71c8a705d"
 ZSTD_COMMIT="5c7b7bad26808e6b40ac3b3d0075466e27738a9d"
+ZARCHIVE_COMMIT="965b66c8d67b6b7e30fd63b3b75aa91a99ff303b"
 
 DESCRIPTION="PlayStation 4 emulator"
 HOMEPAGE="https://shadps4.net/"
@@ -98,6 +99,8 @@ else
 			-> "${PN}"-zycore-"${ZYCORE_COMMIT}".tar.gz
 		https://github.com/shadexternals/zstd/archive/"${ZSTD_COMMIT}".tar.gz
 			-> "${PN}"-zstd-"${ZSTD_COMMIT}".tar.gz
+		https://github.com/shadexternals/ZArchive/archive/"${ZARCHIVE_COMMIT}".tar.gz
+			-> "${PN}"-zarchive-"${ZARCHIVE_COMMIT}".tar.gz
 	"
 fi
 
@@ -122,7 +125,6 @@ DEPEND="
 	dev-libs/pugixml
 	media-libs/libsdl3
 	dev-libs/xxhash
-	app-arch/zarchive
 	sys-libs/zlib-ng
 
 	discord? ( dev-libs/rapidjson )
@@ -212,8 +214,13 @@ src_prepare() {
 
 		rmdir "${S}"/externals/zstd || die
 		mv "${WORKDIR}"/zstd-"${ZSTD_COMMIT}" "${S}"/externals/zstd || die
+
+		eapply "${FILESDIR}/disable-system-zarchive.patch"
+		rmdir "${S}"/externals/zarchive || die
+		mv "${WORKDIR}"/ZArchive-"${ZARCHIVE_COMMIT}" "${S}"/externals/zarchive || die
 	fi
 
+	eapply_user
 	cmake_src_prepare
 }
 
